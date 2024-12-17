@@ -57,12 +57,8 @@ else
     echo "Les répertoires src/controller, src/model ou src/helper sont introuvables"
 fi
 
-# Compiler les fichiers Java dans tempjava
-if [ -d "$tempjava" ] && [ "$(ls -A $tempjava/*.java)" ]; then
-    javac -parameters -cp "$temp/WEB-INF/lib/*" -d "$bin" "$tempjava"/*.java
-else
-    echo "Aucun fichier Java à compiler dans $tempjava"
-fi
+find $tempjava/ -name "*.java" -exec cp -r {} tocompile/ \;
+javac -parameters -cp "lib/*" -d $bin tocompile/*.java
 
 # Copier les fichiers compilés dans WEB-INF/classes
 if [ -d "$bin" ]; then
@@ -72,7 +68,7 @@ else
 fi
 
 # Créer le fichier .war
-cd "$temp" && jar -cvf "/usr/local/tomcat/webapps/$appName.war" ./*
+cd "$temp" && jar -cvf "/home/mikajy/Rafi-baiko/apache-tomcat-9.0.94/webapps/$appName.war" ./*
 
 # Message de fin
 echo "Déploiement terminé."

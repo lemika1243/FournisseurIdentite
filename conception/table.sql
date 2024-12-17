@@ -10,6 +10,14 @@ CREATE TABLE type_reference(
    PRIMARY KEY(id_type)
 );
 
+CREATE TABLE reference(
+   id_reference INTEGER,
+   duree NUMERIC(10,2)   NOT NULL,
+   id_type INTEGER NOT NULL,
+   PRIMARY KEY(id_reference),
+   FOREIGN KEY(id_type) REFERENCES type_reference(id_type)
+);
+
 CREATE TABLE utilisateur(
    id_utilisateur INTEGER,
    email VARCHAR(150)  NOT NULL,
@@ -19,14 +27,6 @@ CREATE TABLE utilisateur(
    PRIMARY KEY(id_utilisateur),
    UNIQUE(email),
    FOREIGN KEY(id_etat) REFERENCES etat(id_etat)
-);
-
-CREATE TABLE reference(
-   id_reference INTEGER,
-   duree NUMERIC(10,2)   NOT NULL,
-   id_type INTEGER NOT NULL,
-   PRIMARY KEY(id_reference),
-   FOREIGN KEY(id_type) REFERENCES type_reference(id_type)
 );
 
 CREATE TABLE pin(
