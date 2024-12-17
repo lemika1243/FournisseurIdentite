@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: FournisseurIdentite
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/var/www/java
+    environment:
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_NAME: "immobilier"
+      DB_USER: "postgres"
+      DB_PASSWORD: "Johary37"
+
+  db:
+    image: postgres:15
+    container_name: fournisseuridentite_db
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "Johary37"
+      POSTGRES_DB: immobilier
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
