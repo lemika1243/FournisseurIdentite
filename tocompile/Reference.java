@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Reference {
     private int id;
@@ -15,6 +17,17 @@ public class Reference {
             this.id = id;
             this.type = type;
             this.duree = duree2;
+    }
+
+    public Reference(int id , float duree , TypeReference type){
+        this.setId(id);
+        this.setDuree(duree);
+        this.setType(type);
+    }
+
+    public Reference(float duree , TypeReference type){
+        this.setDuree(duree);
+        this.setType(type);
     }
 
     // Default Constructor
@@ -55,6 +68,30 @@ public class Reference {
                 '}';
     }
 
+   public static Reference[] getAll(Connection connection, TypeReference[] types) throws Exception {
+        List<Reference> references = new ArrayList<>();
+        String query = "SELECT * FROM reference";
+
+        try (PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                int idReference = rs.getInt("id_reference");
+                float duree = rs.getFloat("duree");
+                int idType = rs.getInt("id_type");
+
+                TypeReference typeReference = TypeReference.getById(idType, types);
+                
+                Reference reference = new Reference(idReference, duree, typeReference);
+                references.add(reference);
+            }
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de getAll references : " + e.getMessage());
+        }
+
+        return references.toArray(new Reference[0]);
+    }
+
     public static Reference getById(Connection connection, int id) throws SQLException {
         String query = """
             SELECT r.id_reference, r.duree, tr.id_type, tr.type
@@ -88,6 +125,22 @@ public class Reference {
 
     public static Reference getTokenReference(Connection connection) throws Exception{
         return getById(connection, 2);
+    }
+
+    
+
+    public static Reference getByType(Reference[] references , String type) throws Exception{
+        Reference ref = null;
+        String t = "";
+        for (Reference reference : references) {
+            t += reference.getType().getTypeReference() ;
+            if(type.equals(reference.getType().getTypeReference())){
+                ref = reference;
+                break;
+            }
+        }
+        // throw new Exception(t);
+        return ref;
     }
 
 }

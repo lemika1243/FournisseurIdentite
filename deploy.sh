@@ -68,6 +68,7 @@ else
 fi
 
 # Créer le fichier .war
+rm /home/mikajy/Rafi-baiko/apache-tomcat-9.0.94/webapps/$appName.war
 cd "$temp" && jar -cvf "/home/mikajy/Rafi-baiko/apache-tomcat-9.0.94/webapps/$appName.war" ./*
 
 # Message de fin
