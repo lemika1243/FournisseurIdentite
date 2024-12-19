@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   app:
     build:
@@ -6,14 +7,12 @@ services:
     container_name: FournisseurIdentite
     ports:
       - "8080:8080"
-    volumes:
-      - .:/usr/local/work/FournisseurIdentite/
     environment:
-      DB_HOST: "db"
-      DB_PORT: "5432"
-      DB_NAME: "immobilier"
-      DB_USER: "postgres"
-      DB_PASSWORD: "Johary37"
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_NAME=fournisseur_identite
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Johary37
     depends_on:
       - db
 
@@ -21,11 +20,14 @@ services:
     image: postgres:15
     container_name: fournisseuridentite_db
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "Johary37"
-      POSTGRES_DB: immobilier
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Johary37
+      POSTGRES_DB: fournisseur_identite
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_fournisseur_identite:/var/lib/postgresql/data
+      - ./conception/sql:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
 
 volumes:
-  db_data:
+  db_data_fournisseur_identite:

@@ -1,2 +1,0 @@
-CREATE DATABASE fournisseur_identite;
-\c fournisseur_identite

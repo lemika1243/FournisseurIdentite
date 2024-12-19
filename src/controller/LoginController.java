@@ -115,7 +115,7 @@ public class LoginController extends HttpServlet{
             try {
                 c.rollback();
             } catch (Exception ex) {
-                // TODO: handle exception
+                out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+ex.getMessage(), new String[0]));
             }
             out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+e.getMessage(), new String[0]));
         }finally{

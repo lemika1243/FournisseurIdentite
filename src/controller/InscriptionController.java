@@ -51,7 +51,7 @@ public class InscriptionController extends HttpServlet{
             try {
                 con.rollback();
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+e1.getMessage(), new String[0]));
             }
             out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+e.getMessage(), new String[0]));
         }finally{

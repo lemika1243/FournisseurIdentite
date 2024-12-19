@@ -11,6 +11,7 @@ webXML="$web/*.xml"
 tempjava="./tempjava"
 appName="FournisseurIdentite"
 
+rm -f "../../tomcat/webapps/$appName.war"
 rm -rf "$temp"
 rm -rf "$tempjava"
 
@@ -59,6 +60,6 @@ else
     echo "Aucun fichier compilé trouvé dans $bin"
 fi
 
-cd "$temp" && jar -cvf "../../../tomcat/webapps/$appName.war" *
+cd "$temp" && jar -cvf "../$appName.war" *
 
 echo "Déploiement terminé."
