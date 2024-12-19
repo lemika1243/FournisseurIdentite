@@ -1,23 +1,27 @@
-# Étape 1 : Utiliser une image de base Tomcat avec JDK
+# Base image with Tomcat 10 and JDK 17
 FROM tomcat:10-jdk17
 
-# Étape 2 : Copier l'ensemble du projet dans le répertoire webapps de Tomcat
-COPY . /usr/local/tomcat/webapps/FournisseurIdentite/
+# Set the working directory inside the container
+WORKDIR /app
 
-# Étape 3 : Copier les bibliothèques PostgreSQL dans le répertoire lib de Tomcat
-COPY lib/postgresql-42.6.0.jar /usr/local/tomcat/lib/
+# Copy the project files to the container
+COPY . /app
 
-# Étape 4 : Copier le script `deploy.sh` dans le répertoire du projet
-# COPY deploy.sh /usr/local/tomcat/webapps/FournisseurIdentite/
+# Convert script to Unix format (optional for Windows users)
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix /app/deploy.sh
 
-# Étape 5 : Définir le répertoire de travail pour exécuter deploy.sh
-WORKDIR /usr/local/tomcat/webapps/FournisseurIdentite/
+# Make the deploy script executable
+RUN chmod +x /app/deploy.sh
 
-# Étape 6 : Donner les permissions d'exécution au script `deploy.sh`
-RUN chmod +x /usr/local/tomcat/webapps/FournisseurIdentite/deploy.sh
+# Run the deployment script with Bash
+RUN /bin/bash /app/deploy.sh
 
-# Étape 7 : Exposer le port 8080 pour Tomcat
+# Move the generated WAR file to the Tomcat webapps directory
+RUN mv /app/FournisseurIdentite.war /usr/local/tomcat/webapps/
+
+# Expose port 8080
 EXPOSE 8080
 
-# Étape 8 : Exécuter le script deploy.sh pour générer le .war puis démarrer Tomcat
-CMD ["sh", "/usr/local/tomcat/webapps/FournisseurIdentite/deploy.sh", "&&", "/usr/local/tomcat/bin/catalina.sh", "run"]
+# Start Tomcat
+CMD ["catalina.sh", "run"]
