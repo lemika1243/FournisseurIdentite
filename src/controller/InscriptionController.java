@@ -41,7 +41,7 @@ public class InscriptionController extends HttpServlet{
             utilisateur.save(con);
             String tempToken = Util.generateRandomString(Constantes.TOKEN_LONGUEUR);
             ValidationInscription validationInscription = new ValidationInscription(-1, tempToken, utilisateur);
-            Utilisateur.sendEmail(Constantes.EMAIL, Constantes.MDP_EMAIL_APP, utilisateur.getEmail(), "localhost:8080/FournisseurIdentite/api/inscription/validation?token="+tempToken);
+            Utilisateur.sendEmail(Constantes.EMAIL, Constantes.MDP_EMAIL_APP, utilisateur.getEmail(), Constantes.BASE_URL+"/api/inscription/validation?token="+tempToken);
             validationInscription.save(con);
             con.commit();
             out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Veuillez verifier votre boite de reception email et valider l'inscription", new String[0]));

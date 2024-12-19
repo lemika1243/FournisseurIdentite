@@ -6,3 +6,4 @@ CREATE SEQUENCE pin_id_pin_seq START 1;
 CREATE SEQUENCE token_id_token_seq START 1;
 CREATE SEQUENCE tentative_id_tentative_seq START 1;
 CREATE SEQUENCE validation_inscription_id_validation_seq START 1;
+CREATE SEQUENCE historique_etat_id_seq START 1;

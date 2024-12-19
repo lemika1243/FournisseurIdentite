@@ -18,7 +18,7 @@ import java.io.BufferedReader;
 public class Util {
 
     public static String generateRandomString(int length) {
-        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%";
+        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!$%";
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder(length);
 
@@ -116,6 +116,25 @@ public class Util {
         LocalDateTime newDateTime = dateTime.plusSeconds(totalSeconds);
     
         return Timestamp.valueOf(newDateTime);
+    }
+
+    public static void supports(HttpServletRequest request)throws Exception{
+        String headerValue = request.getHeader("Authorization");
+        if (headerValue == null || headerValue.isEmpty()) {
+            throw new Exception("Header invalide ou manquant");
+        }
+        if (!headerValue.startsWith("Bearer ")) {
+            throw new Exception("Token non fourni");
+        }
+    }
+
+    public static String extractToken(HttpServletRequest request)throws Exception{
+        try {
+            supports(request);
+            return request.getHeader("Authorization").substring(7);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 }

@@ -13,4 +13,5 @@ public class Constantes {
     public static final String PIN_TYPE = "pin";
     public static final String EMAIL = "mikajyjoharytsiorysarobidy@gmail.com";
     public static final String MDP_EMAIL_APP = "pxcf nful eldl vmlt";
+    public static final String BASE_URL = "localhost:8080/FournisseurIdentite";
 }

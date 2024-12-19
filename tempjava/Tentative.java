@@ -58,7 +58,7 @@ public class Tentative {
          try (PreparedStatement ps = connection.prepareStatement(query)){
             ps.setInt(1, utilisateur.getIdUtilisateur());
             try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
+                while(rs.next()){
                     Tentative tentative = new Tentative(rs.getInt("id_tentative"), rs.getTimestamp("date_tentative"), utilisateur);
                     tentatives.add(tentative);
                 }

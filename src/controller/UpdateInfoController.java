@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Connexion;
+import model.Token;
 import model.Utilisateur;
 
 import java.io.IOException;
@@ -27,14 +28,22 @@ public class UpdateInfoController extends HttpServlet{
         try {
             con = Connexion.dbConnect();
             con.setAutoCommit(false);
+            String token = Util.extractToken(request);
             JsonObject jsonObject = Util.extractJsonFrom(request);
             String email = jsonObject.get("email").getAsString();
             String mdp = jsonObject.get("mdp").getAsString();
-            Utilisateur utilisateur = Utilisateur.getUtilisateurByEmail(email, null);
-            utilisateur.setMdp(mdp);
+            Utilisateur utilisateur = Utilisateur.getUtilisateurByEmail(email, con);
+            Token userToken = Token.getTokenByUtilisateur(con, utilisateur, request.getHeader("User-Agent"));
+            if (!token.equals(userToken.getToken())) {
+                throw new Exception("Token invalide");
+            }
+            if (userToken.getDateExpiration().before(Util.getCurrentTimestamp())) {
+                throw new Exception("Token expiré");
+            }
+            utilisateur.setMdp(Util.hashPassword(mdp));
             utilisateur.update(con);
             con.commit();
-            out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Les informations du compte a ete mis a jour", new String[0]));
+            out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Les informations du compte ont ete mis a jour", new String[0]));
         } catch (Exception e) {
             try {
                 con.rollback();

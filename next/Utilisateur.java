@@ -7,6 +7,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import helper.Constantes;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.regex.*;
@@ -165,5 +168,16 @@ public class Utilisateur {
         }
 
         return utilisateur;
+    }
+
+    public void reinitialiser(Connection con)throws Exception{
+        String sql = "UPDATE utilisateur SET id_etat=? WHERE id_utilisateur=?";
+        try(PreparedStatement prst = con.prepareStatement(sql)){
+            prst.setInt(1, Etat.getEtatByUniqueEtat(con, Constantes.VALIDE));
+            prst.setString(2, this.getIdUtilisateur());
+            prst.executeUpdate();
+        }catch(Exception e){
+            throw new Exception("Erreur lors de la reinitialisation du compte "+e.getMessage());
+        }
     }
 }

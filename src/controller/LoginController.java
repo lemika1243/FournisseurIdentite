@@ -49,8 +49,16 @@ public class LoginController extends HttpServlet{
             String email = jsonObject.get("email").getAsString();
             String type = jsonObject.get("type").getAsString();
             Utilisateur utilisateur = Utilisateur.getUtilisateurByEmail(email, c);
+            if (utilisateur == null) {
+                throw new Exception("Aucun utilisateur n'est associe a cet email");
+            }
             Tentative[] tentatives = Tentative.getAllByUtilisateur(utilisateur, c);
-            if(utilisateur.getTentativeMax() < tentatives.length){
+            int tentativeRestant = utilisateur.getTentativeMax() - tentatives.length - 1;
+            if (utilisateur.estBloque()) {
+                out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"Ce compte est bloque",new String[0]));
+                return;
+            }
+            if(tentativeRestant <= 0){
                 utilisateur.bloque(c);
                 out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"trop de tentative , vous etes bloque en consequant",new String[0]));
                 c.commit();
@@ -63,7 +71,7 @@ public class LoginController extends HttpServlet{
                 if (!utilisateur.getMdp().equals(mdp)) {
                     Tentative tentative = new Tentative(Util.getCurrentTimestamp(), utilisateur);
                     tentative.save(c);
-                    out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"Mot de passe errone il vous reste "+(utilisateur.getTentativeMax() - tentatives.length - 1)+" d'essaie(s)",new String[0]));
+                    out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"Mot de passe errone il vous reste "+tentativeRestant+" d'essaie(s)",new String[0]));
                     c.commit();
                     c.close();
                     return;
@@ -79,11 +87,11 @@ public class LoginController extends HttpServlet{
             }else if(type.equals("pin")){
                 int pinInForm = jsonObject.get("pin").getAsInt();
                 Pin pin = Pin.getPinByUtilisateur(utilisateur, c);
-                if (pin.getDateExpiration().before(Util.getCurrentTimestamp())) {
-                    out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE,"Ce Pin est deja expire",new String[0]));
-                    return;
-                }
                 if(pin!=null && pin.getPin() == pinInForm){
+                    if (pin.getDateExpiration().before(Util.getCurrentTimestamp())) {
+                        out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE,"Ce Pin est deja expire",new String[0]));
+                        return;
+                    }
                     Token token = Token.getTokenByUtilisateur(c, utilisateur,request.getHeader("User-Agent"));
                     Tentative.delete(c, utilisateur.getIdUtilisateur());
                     if(token==null){
@@ -98,7 +106,7 @@ public class LoginController extends HttpServlet{
                 else{
                     Tentative tentative = new Tentative(Util.getCurrentTimestamp(), utilisateur);
                     tentative.save(c);
-                    message = Util.formatResponse("Error",Constantes.INTERNAL_SERVER_ERROR,"PIN non reconnu il vous reste "+(utilisateur.getTentativeMax() - tentatives.length - 1)+" essaie(s)",new String[0]);
+                    message = Util.formatResponse("Error",Constantes.INTERNAL_SERVER_ERROR,"PIN non reconnu il vous reste "+tentativeRestant+" essaie(s)",new String[0]);
                 }
             }
             c.commit();

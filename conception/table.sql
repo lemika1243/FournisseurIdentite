@@ -51,10 +51,10 @@ CREATE TABLE validation_inscription (
 );
 
 CREATE TABLE historique_etat (
+   id_historique_etat INTEGER DEFAULT nextval('historique_etat_id_seq') PRIMARY KEY,
    id_utilisateur INTEGER,
    id_etat SMALLINT,
    date_etat VARCHAR(50) NOT NULL,
-   PRIMARY KEY(id_utilisateur, id_etat),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur),
    FOREIGN KEY(id_etat) REFERENCES etat(id_etat)
 );

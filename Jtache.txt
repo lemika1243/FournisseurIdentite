@@ -1,0 +1,19 @@
+Class
+    -Entity
+        -Utilisateur
+            Func:
+                -bloque()
+                -validee()
+                -update()
+                -reinitialiser()
+                -estBloque
+    -Helper
+        -Util
+            Func:
+                -supports()
+                -extractToken()
+                -extractJsonFrom()
+    -Servlet
+        -ReinitialisationCompteController
+        -ReinitialisationCompteValidationController
+        -UpdateInfoController

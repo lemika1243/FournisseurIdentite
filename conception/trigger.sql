@@ -19,7 +19,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_historique_etat
+CREATE OR REPLACE TRIGGER trigger_historique_etat
 AFTER INSERT OR UPDATE OF id_etat
 ON utilisateur
 FOR EACH ROW

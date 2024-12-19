@@ -159,6 +159,7 @@ public class Utilisateur {
             try(PreparedStatement prst = con.prepareStatement(sql)){
                 prst.setString(1, this.getMdp());
                 prst.setInt(2, this.getIdUtilisateur());
+                prst.executeUpdate();
             }
         } catch (Exception e) {
             throw new Exception("Erreur lors de la mis a jour de l'utilisateur "+e.getMessage());
@@ -206,5 +207,20 @@ public class Utilisateur {
         Matcher matcher = pattern.matcher(this.email);
 
         return matcher.matches();
+    }
+    public void reinitialiser(Connection con)throws Exception{
+        String sql = "UPDATE utilisateur SET id_etat=? WHERE id_utilisateur=?";
+        try(PreparedStatement prst = con.prepareStatement(sql)){
+            prst.setInt(1, Etat.getEtatByUniqueEtat(con, Constantes.VALIDE).getIdEtat());
+            prst.setInt(2, this.getIdUtilisateur());
+            prst.executeUpdate();
+            Tentative.delete(con, this.getIdUtilisateur());
+        }catch(Exception e){
+            throw new Exception("Erreur lors de la reinitialisation du compte "+e.getMessage());
+        }
+    }
+
+    public boolean estBloque(){
+        return this.getEtat().getEtat() == Constantes.BLOQUE;
     }
 }
