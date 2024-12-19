@@ -7,13 +7,15 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - .:/var/www/java
+      - .:/usr/local/work/FournisseurIdentite/
     environment:
       DB_HOST: "db"
       DB_PORT: "5432"
       DB_NAME: "immobilier"
       DB_USER: "postgres"
       DB_PASSWORD: "Johary37"
+    depends_on:
+      - db
 
   db:
     image: postgres:15

@@ -1,65 +1,59 @@
-CREATE TABLE etat(
-   id_etat SMALLINT,
-   etat SMALLINT NOT NULL,
-   PRIMARY KEY(id_etat)
+CREATE TABLE etat (
+   id_etat SMALLINT DEFAULT nextval('etat_id_etat_seq') PRIMARY KEY,
+   designation VARCHAR(50) ,
+   etat SMALLINT NOT NULL UNIQUE
 );
 
-CREATE TABLE type_reference(
-   id_type INTEGER,
-   type VARCHAR(50)  NOT NULL,
-   PRIMARY KEY(id_type)
+CREATE TABLE type_reference (
+   id_type INTEGER DEFAULT nextval('type_reference_id_type_seq') PRIMARY KEY,
+   type VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE utilisateur(
-   id_utilisateur INTEGER,
-   email VARCHAR(150)  NOT NULL,
-   mdp VARCHAR(255)  NOT NULL,
-   tentative_max SMALLINT CHECK(tentative_max >= 0),
-   id_etat SMALLINT NOT NULL,
-   PRIMARY KEY(id_utilisateur),
-   UNIQUE(email),
-   FOREIGN KEY(id_etat) REFERENCES etat(id_etat)
+CREATE TABLE utilisateur (
+   id_utilisateur INTEGER DEFAULT nextval('utilisateur_id_utilisateur_seq') PRIMARY KEY,
+   email VARCHAR(150) NOT NULL UNIQUE,
+   mdp VARCHAR(255) NOT NULL,
+   tentative_max SMALLINT CHECK (tentative_max >= 0),
+   id_etat SMALLINT NOT NULL REFERENCES etat(id_etat)
 );
 
-CREATE TABLE reference(
-   id_reference INTEGER,
-   duree NUMERIC(10,2)   NOT NULL,
-   id_type INTEGER NOT NULL,
-   PRIMARY KEY(id_reference),
-   FOREIGN KEY(id_type) REFERENCES type_reference(id_type)
+CREATE TABLE reference (
+   id_reference INTEGER DEFAULT nextval('reference_id_reference_seq') PRIMARY KEY,
+   duree NUMERIC(10, 2) NOT NULL,
+   id_type INTEGER NOT NULL REFERENCES type_reference(id_type)
 );
 
-CREATE TABLE pin(
-   id_pin INTEGER,
+CREATE TABLE pin (
+   id_pin INTEGER DEFAULT nextval('pin_id_pin_seq') PRIMARY KEY,
    pin SMALLINT NOT NULL,
    date_expiration TIMESTAMP NOT NULL,
-   id_utilisateur INTEGER NOT NULL,
-   PRIMARY KEY(id_pin),
-   FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+   id_utilisateur INTEGER NOT NULL REFERENCES utilisateur(id_utilisateur)
 );
 
-CREATE TABLE token(
-   id_token INTEGER,
+CREATE TABLE token (
+   id_token INTEGER DEFAULT nextval('token_id_token_seq') PRIMARY KEY,
    token TEXT,
-   user_agent VARCHAR(255)  NOT NULL,
+   user_agent VARCHAR(255) NOT NULL,
    date_expiration TIMESTAMP,
-   id_utilisateur INTEGER NOT NULL,
-   PRIMARY KEY(id_token),
-   FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+   id_utilisateur INTEGER NOT NULL REFERENCES utilisateur(id_utilisateur)
 );
 
-CREATE TABLE tentative(
-   id_tentative INTEGER,
+CREATE TABLE tentative (
+   id_tentative INTEGER DEFAULT nextval('tentative_id_tentative_seq') PRIMARY KEY,
    date_tentative TIMESTAMP NOT NULL,
-   id_utilisateur INTEGER NOT NULL,
-   PRIMARY KEY(id_tentative),
-   FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+   id_utilisateur INTEGER NOT NULL REFERENCES utilisateur(id_utilisateur)
 );
 
-CREATE TABLE historique_etat(
+CREATE TABLE validation_inscription (
+   id_validation INTEGER DEFAULT nextval('validation_inscription_id_validation_seq') PRIMARY KEY,
+   token TEXT NOT NULL,
+   id_utilisateur INTEGER NOT NULL REFERENCES utilisateur(id_utilisateur)
+);
+
+CREATE TABLE historique_etat (
    id_utilisateur INTEGER,
    id_etat SMALLINT,
-   date_etat VARCHAR(50)  NOT NULL,
+   date_etat VARCHAR(50) NOT NULL,
    PRIMARY KEY(id_utilisateur, id_etat),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur),
    FOREIGN KEY(id_etat) REFERENCES etat(id_etat)

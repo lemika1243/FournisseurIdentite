@@ -16,7 +16,7 @@ public class TestConnexion extends HttpServlet{
     public void doGet(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
         PrintWriter out = response.getWriter();
         try{
-            Connection c = Connexion.dbConnect();
+            // Connection c = Connexion.dbConnect();
             out.println("Connected !");
         }catch(Exception e){
             out.println("Erreur dans test connexion servlet "+e.getMessage());
