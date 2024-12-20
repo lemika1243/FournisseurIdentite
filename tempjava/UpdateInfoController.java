@@ -21,7 +21,7 @@ import java.sql.Connection;
 @WebServlet("/api/updateInfo")
 public class UpdateInfoController extends HttpServlet{
     
-    public void doPost(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
+    public void doPut(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         Connection con = null;

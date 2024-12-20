@@ -20,7 +20,7 @@ import helper.Util;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import model.Utilisateur;;
+import model.Utilisateur;
 
 @WebServlet("/api/inscription")
 public class InscriptionController extends HttpServlet{

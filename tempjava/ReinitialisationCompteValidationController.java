@@ -20,7 +20,7 @@ import helper.Util;
 @WebServlet("/api/reinitialisation/validation")
 public class ReinitialisationCompteValidationController extends HttpServlet{
     
-    public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
+    public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         Connection con = null;
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");

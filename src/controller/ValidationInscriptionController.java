@@ -22,7 +22,7 @@ import java.sql.SQLException;
 @WebServlet("/api/inscription/validation")
 public class ValidationInscriptionController extends HttpServlet{
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
+    public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         Connection con = null;
