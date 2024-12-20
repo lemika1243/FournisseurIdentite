@@ -36,14 +36,14 @@ public class ReinitialisationCompteController extends HttpServlet{
             if (!utilisateur.getMdp().equals(Util.hashPassword(mdp))) {
                 throw new Exception("Mot de passe incorrect");
             }
-            Token userToken = Token.getTokenByUtilisateur(con, utilisateur, request.getHeader("User-Agent"));
-            String token = Util.extractToken(request);
-            if (!token.equals(userToken.getToken())) {
-                throw new Exception("Token invalide");
-            }
-            if (userToken.getDateExpiration().before(Util.getCurrentTimestamp())) {
-                throw new Exception("Token expiré");
-            }
+            // Token userToken = Token.getTokenByUtilisateur(con, utilisateur, request.getHeader("User-Agent"));
+            // String token = Util.extractToken(request);
+            // if (!token.equals(userToken.getToken())) {
+            //     throw new Exception("Token invalide");
+            // }
+            // if (userToken.getDateExpiration().before(Util.getCurrentTimestamp())) {
+            //     throw new Exception("Token expiré");
+            // }
             Utilisateur.sendEmail(Constantes.EMAIL, Constantes.MDP_EMAIL_APP, email, Constantes.BASE_URL+"/api/reinitialisation/validation?e="+email);
             out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Veuillez verifier votre boite de reception email pour valider la recuperation du compte", new String[0]));
         } catch (Exception e) {

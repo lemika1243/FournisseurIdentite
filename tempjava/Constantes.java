@@ -8,7 +8,7 @@ public class Constantes {
     public static final int INTERNAL_SERVER_ERROR = 500;
     public static final int TENTATIVE_DEPASSE = 501;
     public static final int TOKEN_LONGUEUR = 25;
-    public static final int TENTATIVE_MAX = 5;
+    public static final int TENTATIVE_MAX = 3;
     public static final int PIN_LONGUEUR = 5;
     public static final String PIN_TYPE = "pin";
     public static final String EMAIL = "mikajyjoharytsiorysarobidy@gmail.com";

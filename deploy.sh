@@ -61,5 +61,7 @@ else
 fi
 
 cd "$temp" && jar -cvf "../$appName.war" *
+cd ..
+cp -r $appName.war "/usr/local/tomcat/webapps/"
 
 echo "Déploiement terminé."

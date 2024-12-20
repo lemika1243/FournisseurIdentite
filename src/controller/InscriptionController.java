@@ -45,8 +45,6 @@ public class InscriptionController extends HttpServlet{
             validationInscription.save(con);
             con.commit();
             out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Veuillez verifier votre boite de reception email et valider l'inscription", new String[0]));
-            
-            out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Donnee recu", new String[]{email, mdp}));
         } catch (Exception e) {
             try {
                 con.rollback();

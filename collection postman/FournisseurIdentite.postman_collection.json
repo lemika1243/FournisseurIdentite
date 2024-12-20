@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "57b7d195-7d19-44e2-a803-0d9dc0ce89db",
+		"name": "FournisseurIdentite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39748546"
+	},
+	"item": [
+		{
+			"name": "Inscription-etape-1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"mdp\": \"mdp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/FournisseurIdentite/api/inscription",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FournisseurIdentite",
+						"api",
+						"inscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inscription-etape-2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "coller l'url depuis gmail ici",
+					"host": [
+						"coller l'url depuis gmail ici"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login-etape-1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"mdp\": \"mdp\",\r\n    \"type\": \"login\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/FournisseurIdentite/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FournisseurIdentite",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login-etape-2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"mdp\": \"mdp\",\r\n    \"type\": \"pin\",\r\n    \"pin\": 36519\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/FournisseurIdentite/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FournisseurIdentite",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gestion compte",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "9WX$UyDpqmoR9uAns1Y6fIC0f",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"mdp\": \"nouveauMotDePasse\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/FournisseurIdentite/api/updateInfo",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FournisseurIdentite",
+						"api",
+						"updateInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reinitialisation compte-etape-1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "9WX$UyDpqmoR9uAns1Y6fIC0f",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"mdp\": \"nouveauMotDePasse\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/FournisseurIdentite/api/reinitialisation",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FournisseurIdentite",
+						"api",
+						"reinitialisation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reinitialisation compte-etape-2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "coller l'url depuis gmail ici",
+					"host": [
+						"coller l'url depuis gmail ici"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
