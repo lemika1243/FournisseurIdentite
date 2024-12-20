@@ -1,0 +1,6 @@
+-La documentation de l'application se trouve dans le dossier documentation a la racine du projet
+-Les url et leur methode respectif de postman sont dans le fichier urlPostman.txt
+
+pour lancer le projet:
+    1-docker-compose build --no-cache
+    2-docker-compose up -d
