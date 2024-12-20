@@ -1,5 +1,5 @@
 L'inscription se fait en 2 etapes
-    1- http://localhost:8080/api/inscription [POST]:
+    1- http://localhost:8080/FournisseurIdentite/api/inscription [POST]:
     {
         "email" : "example@gmail.com",
         "mdp" : "mdpexample"
@@ -9,14 +9,14 @@ L'inscription se fait en 2 etapes
 
 
 Le login se fait en 2 etapes
-    1-http://localhost:8080/api/login [POST]:
+    1-http://localhost:8080/FournisseurIdentite/api/login [POST]:
         {
             "email" : "example@gmail.com",
             "mdp" : "mdpexample",
             "type": "login"
         }
 
-    2-http://localhost:8080/api/login [POST]:
+    2-http://localhost:8080/FournisseurIdentite/api/login [POST]:
         {
             "email" : "example@gmail.com",
             "pin": 00000,
@@ -26,7 +26,7 @@ Le login se fait en 2 etapes
     dont le token est 'fiorjgoerg4894gr@$' excluant  "[\" et \"]"
 
 La reinitialisation d'un compte bloque se fait en 2 etapes et requiert un token
-    1-http://localhost:8080/api/reinitialisation [POST]
+    1-http://localhost:8080/FournisseurIdentite/api/reinitialisation [POST]
         {
             "email" : "example@gmail.com",
             "mdp": "mdpexample"
@@ -36,7 +36,7 @@ La reinitialisation d'un compte bloque se fait en 2 etapes et requiert un token
 
 
 On doit etre connecte avant d'entree sur cet url
-    http://localhost:8080/api/updateInfo [PUT]:
+    http://localhost:8080/FournisseurIdentite/api/updateInfo [PUT]:
     {
         "email" : "example@gmail.com",
         "mdp" : "password"
