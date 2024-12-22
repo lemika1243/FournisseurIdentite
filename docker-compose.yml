@@ -1,0 +1,13 @@
+version: '3'  # Utiliser une version non obsolète
+
+services:
+  app:
+    build:
+      context: .  # Le répertoire où se trouve votre Dockerfile
+    container_name: react-vite-app
+    ports:
+      - "5173:5173"  # Mappe le port 5173 de l'hôte vers le port 5173 du conteneur
+    volumes:
+      - .:/app  # Monte le répertoire local sur le conteneur pour un développement plus facile
+    environment:
+      - NODE_ENV=development

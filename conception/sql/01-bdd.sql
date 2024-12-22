@@ -1,1 +1,0 @@
-\c fournisseur_identite

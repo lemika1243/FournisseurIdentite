@@ -1,27 +1,23 @@
-# Base image with Tomcat 10 and JDK 17
-FROM tomcat:10-jdk17
+# Utilisez une version stable de Node.js (alpine pour être plus léger)
+FROM node:18-alpine
 
-# Set the working directory inside the container
+# Répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copy the project files to the container
-COPY . /app
+# Copier les fichiers package.json et package-lock.json
+COPY package.json package-lock.json ./
 
-# Convert script to Unix format (optional for Windows users)
-RUN apt-get update && apt-get install -y dos2unix
-RUN dos2unix /app/deploy.sh
+# Supprimer node_modules et package-lock.json précédents si présents (évite les erreurs liées aux versions et dépendances)
+RUN rm -rf node_modules package-lock.json
 
-# Make the deploy script executable
-RUN chmod +x /app/deploy.sh
+# Installer les dépendances avec --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
-# Run the deployment script with Bash
-RUN /bin/bash /app/deploy.sh
+# Copier tout le reste des fichiers du projet
+COPY . .
 
-# Move the generated WAR file to the Tomcat webapps directory
-RUN mv /app/FournisseurIdentite.war /usr/local/tomcat/webapps/
+# Exposer le port de l'application Vite
+EXPOSE 5173
 
-# Expose port 8080
-EXPOSE 8080
-
-# Start Tomcat
-CMD ["catalina.sh", "run"]
+# Démarrer l'application Vite
+CMD ["npm", "run", "dev"]
