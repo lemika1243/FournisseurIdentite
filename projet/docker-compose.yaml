@@ -1,0 +1,9 @@
+services:
+  react-app:
+    build:
+      context: ./react-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    restart: always
+    container_name: react-app

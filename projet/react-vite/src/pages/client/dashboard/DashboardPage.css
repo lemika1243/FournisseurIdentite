@@ -1,0 +1,9 @@
+/*.parent-container{
+    height: 100vh;
+}*/
+
+.custom-menu .ant-menu-item:hover {
+    background-color: #1d3557; /* Couleur de fond sur hover */
+    color: #a8dadc;            /* Couleur du texte sur hover */
+    transition: all 0.3s ease; /* Effet de transition */
+  }
