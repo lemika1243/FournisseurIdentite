@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -10,10 +9,7 @@ import java.io.PrintWriter;
 import model.Connexion;
 import model.Pin;
 import model.Tentative;
-import model.Utilisateur;
-import model.Reference;
 import model.Token;
-
 import java.sql.Connection;
 
 import com.google.gson.JsonObject;
@@ -23,21 +19,23 @@ import helper.Constantes;
 import model.Reference;
 import model.TypeReference;
 import model.Utilisateur;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/api/login")
-public class LoginController extends HttpServlet{
-    
-    public void doGet(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
-        PrintWriter out = response.getWriter();
-        try{
-            
-            out.println("Connected !");
-        }catch(Exception e){
-            out.println("Erreur dans test connexion servlet "+e.getMessage());
-        }
+public class LoginController extends HttpServlet {
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Add CORS headers for preflight requests
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-binarybox-api-key");
+        response.setHeader("Access-Control-Max-Age", "3600");
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         String message = "";
@@ -49,81 +47,112 @@ public class LoginController extends HttpServlet{
             String email = jsonObject.get("email").getAsString();
             String type = jsonObject.get("type").getAsString();
             Utilisateur utilisateur = Utilisateur.getUtilisateurByEmail(email, c);
+
             if (utilisateur == null) {
                 throw new Exception("Aucun utilisateur n'est associe a cet email");
             }
+
             Tentative[] tentatives = Tentative.getAllByUtilisateur(utilisateur, c);
             int tentativeRestant = utilisateur.getTentativeMax() - tentatives.length - 1;
+
             if (utilisateur.estBloque()) {
-                out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"Ce compte est bloque",new String[0]));
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("message", "Ce compte est bloque");
+                out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE, "Ce compte est bloque", responseMap));
                 return;
             }
-            if(tentativeRestant <= 0){
+
+            if (tentativeRestant <= 0) {
                 utilisateur.bloque(c);
-                out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"trop de tentative , vous etes bloque en consequant",new String[0]));
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("message", "Trop de tentatives, vous êtes bloqué");
+                out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE, "Trop de tentatives, vous êtes bloqué", responseMap));
                 c.commit();
                 c.close();
                 return;
             }
+
             if (type.equalsIgnoreCase("login")) {
                 String mdp = jsonObject.get("mdp").getAsString();
                 mdp = Util.hashPassword(mdp);
                 if (!utilisateur.getMdp().equals(mdp)) {
                     Tentative tentative = new Tentative(Util.getCurrentTimestamp(), utilisateur);
                     tentative.save(c);
-                    out.print(Util.formatResponse("Error",Constantes.TENTATIVE_DEPASSE,"Mot de passe errone il vous reste "+tentativeRestant+" d'essaie(s)",new String[0]));
+
+                    Map<String, Object> responseMap = new HashMap<>();
+                    responseMap.put("message", "Mot de passe erroné, il vous reste " + tentativeRestant + " essai(s)");
+                    out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE, "Mot de passe erroné, il vous reste " + tentativeRestant + " essai(s)", responseMap));
                     c.commit();
                     c.close();
                     return;
                 }
-                //supprimer les anciens pin de l'utilisateur car on pas a les stockes
+
+                // Supprimer les anciens pins de l'utilisateur, car on ne doit pas les stocker
                 Pin.delete(c, utilisateur);
                 Reference[] refs = Reference.getAll(c, TypeReference.getAll(c));
-                //generation d'une nouvelle pin
+                // Génération d'un nouveau pin
                 Pin pin = Pin.genererPin(utilisateur, refs);
-                Utilisateur.sendEmail(Constantes.EMAIL, Constantes.MDP_EMAIL_APP, utilisateur.getEmail(), "Veuillez copier ce chiffre pour valider l'authentification multi-facteur "+pin.getPin());
+                Utilisateur.sendEmail(Constantes.EMAIL, Constantes.MDP_EMAIL_APP, utilisateur.getEmail(), Util.generateStyledHtmlPin(pin.getPin(), pin.getDateExpiration()));
                 pin.save(c);
-                message = Util.formatResponse("Success",Constantes.SUCCESS_CODE,"Veuillez fournir le PIN que nous avons envoye a votre adresse email",new String[0]);
-            }else if(type.equals("pin")){
+
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("message", "Veuillez fournir le PIN que nous avons envoyé à votre adresse email");
+                out.print(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Veuillez fournir le PIN que nous avons envoyé à votre adresse email", responseMap));
+            } else if (type.equals("pin")) {
                 int pinInForm = jsonObject.get("pin").getAsInt();
                 Pin pin = Pin.getPinByUtilisateur(utilisateur, c);
-                if(pin!=null && pin.getPin() == pinInForm){
+
+                if (pin != null && pin.getPin() == pinInForm) {
                     if (pin.getDateExpiration().before(Util.getCurrentTimestamp())) {
-                        out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE,"Ce Pin est deja expire",new String[0]));
+                        Map<String, Object> responseMap = new HashMap<>();
+                        // responseMap.put("status", "Error");
+                        // responseMap.put("code", Constantes.TENTATIVE_DEPASSE);
+                        // responseMap.put("message", "Ce PIN est déjà expiré");
+                        out.print(Util.formatResponse("Error", Constantes.TENTATIVE_DEPASSE, "Ce PIN est déjà expiré", responseMap));
                         return;
                     }
-                    Token token = Token.getTokenByUtilisateur(c, utilisateur,request.getHeader("User-Agent"));
+
+                    Token token = Token.getTokenByUtilisateur(c, utilisateur, request.getHeader("User-Agent"));
                     Tentative.delete(c, utilisateur.getIdUtilisateur());
-                    if(token==null){
-                        token = Token.genererToken(c, utilisateur , request.getHeader("User-Agent"));
+
+                    if (token == null) {
+                        token = Token.genererToken(c, utilisateur, request.getHeader("User-Agent"));
                         token.insert(c);
-                    }
-                    else{
+                    } else {
                         token.setToken(c, Util.generateRandomString(Constantes.TOKEN_LONGUEUR));
                     }
-                    message=Util.formatResponse("Success",Constantes.SUCCESS_CODE,"Vous etes connecte",new String[]{token.getToken()});
-                }
-                else{
+
+                    Map<String, Object> responseMap = new HashMap<>();
+                    responseMap.put("message", "Vous êtes connecté");
+                    responseMap.put("token", token.getToken());
+                    responseMap.put("email", utilisateur.getEmail());
+                    responseMap.put("dateExpiration", token.getDateExpiration().toString());
+                    out.print(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Vous êtes connecté", responseMap));
+                } else {
                     Tentative tentative = new Tentative(Util.getCurrentTimestamp(), utilisateur);
                     tentative.save(c);
-                    message = Util.formatResponse("Error",Constantes.INTERNAL_SERVER_ERROR,"PIN non reconnu il vous reste "+tentativeRestant+" essaie(s)",new String[0]);
+
+                    Map<String, Object> responseMap = new HashMap<>();
+                    responseMap.put("message", "PIN non reconnu, il vous reste " + tentativeRestant + " essai(s)");
+                    out.print(Util.formatResponse("Error", Constantes.INTERNAL_SERVER_ERROR, "PIN non reconnu, il vous reste " + tentativeRestant + " essai(s)", responseMap));
                 }
             }
             c.commit();
-            out.print(message);
         } catch (Exception e) {
             try {
                 c.rollback();
             } catch (Exception ex) {
-                out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+ex.getMessage(), new String[0]));
+                Map<String, Object> responseMap = new HashMap<>();
+                out.print(Util.formatResponse("Error", Constantes.INTERNAL_SERVER_ERROR, "Erreur " + ex.getMessage(), responseMap));
             }
-            out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, "Erreur "+e.getMessage(), new String[0]));
-        }finally{
+            Map<String, Object> responseMap = new HashMap<>();
+            out.print(Util.formatResponse("Error", Constantes.INTERNAL_SERVER_ERROR, "Erreur " + e.getMessage(), responseMap));
+        } finally {
             try {
                 if (c != null) c.close();
             } catch (Exception e) {
+                // Log error
             }
         }
     }
-
 }

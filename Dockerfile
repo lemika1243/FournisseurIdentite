@@ -8,8 +8,8 @@ WORKDIR /app
 COPY . /app
 
 # Convert script to Unix format (optional for Windows users)
-RUN apt-get update && apt-get install -y dos2unix
-RUN dos2unix /app/deploy.sh
+# RUN apt-get update && apt-get install -y dos2unix
+# RUN dos2unix /app/deploy.sh
 
 # Make the deploy script executable
 RUN chmod +x /app/deploy.sh
