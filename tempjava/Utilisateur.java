@@ -190,6 +190,9 @@ public class Utilisateur {
             message.setSubject("Inscription"); // Objet de l'e-mail
             message.setText(content); // Contenu de l'e-mail
 
+            message.setContent(content, "text/html; charset=utf-8");
+
+
             Transport.send(message);
 
             System.out.println("E-mail envoyé avec succès !");

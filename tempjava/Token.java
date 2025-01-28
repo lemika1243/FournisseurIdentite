@@ -98,7 +98,7 @@ public class Token {
         String generatedToken = Util.generateRandomString(Constantes.TOKEN_LONGUEUR);
 
         // Set token expiration to 24 hours from now
-        LocalDateTime expiration = LocalDateTime.now().plusSeconds((long) reference.getDuree());
+        LocalDateTime expiration = LocalDateTime.now().plusHours((long) reference.getDuree());
 
         // Create and return a new Token
         Token token = new Token();

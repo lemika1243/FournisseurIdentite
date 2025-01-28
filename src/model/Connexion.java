@@ -9,7 +9,7 @@ public class Connexion{
         Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://db:5432/fournisseur_identite";
+            String url = "jdbc:postgresql://localhost:5432/fournisseur_identite";
             String user = "postgres";
             String password = "Johary37";
             connection = DriverManager.getConnection(url, user, password);
