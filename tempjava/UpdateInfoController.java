@@ -17,11 +17,12 @@ import com.google.gson.JsonObject;
 import helper.Constantes;
 import helper.Util;
 import java.sql.Connection;
+import java.util.HashMap;
 
 @WebServlet("/api/updateInfo")
 public class UpdateInfoController extends HttpServlet{
     
-    public void doPost(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
+    public void doPut(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException{
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         Connection con = null;
@@ -43,13 +44,13 @@ public class UpdateInfoController extends HttpServlet{
             utilisateur.setMdp(Util.hashPassword(mdp));
             utilisateur.update(con);
             con.commit();
-            out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Les informations du compte ont ete mis a jour", new String[0]));
+            out.println(Util.formatResponse("Success", Constantes.SUCCESS_CODE, "Les informations du compte ont ete mis a jour", new HashMap<>()));
         } catch (Exception e) {
             try {
                 con.rollback();
             } catch (Exception ee) {
             }
-            out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, e.getMessage(), new String[0]));
+            out.println(Util.formatResponse("Erreur", Constantes.INTERNAL_SERVER_ERROR, e.getMessage(), new HashMap<>()));
         }finally{
             try {
                 if (con != null) con.close();

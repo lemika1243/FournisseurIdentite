@@ -1,0 +1,45 @@
+L'inscription se fait en 2 etapes
+    1- http://localhost:8080/FournisseurIdentite/api/inscription [POST]:
+    {
+        "email" : "example@gmail.com",
+        "mdp" : "mdpexample"
+    }
+
+    2- Coller l'url envoyee par email [GET]
+
+
+Le login se fait en 2 etapes
+    1-http://localhost:8080/FournisseurIdentite/api/login [POST]:
+        {
+            "email" : "example@gmail.com",
+            "mdp" : "mdpexample",
+            "type": "login"
+        }
+
+    2-http://localhost:8080/FournisseurIdentite/api/login [POST]:
+        {
+            "email" : "example@gmail.com",
+            "pin": 00000,
+            "type": "pin"
+        }
+    recuperer le token genere par l'API sous forme "[\"fiorjgoerg4894gr@$\"]" pour le mettre dans le header
+    dont le token est 'fiorjgoerg4894gr@$' excluant  "[\" et \"]"
+
+La reinitialisation d'un compte bloque se fait en 2 etapes et requiert un token
+    1-http://localhost:8080/FournisseurIdentite/api/reinitialisation [POST]
+        {
+            "email" : "example@gmail.com",
+            "mdp": "mdpexample"
+        }
+    2-coller l'url envoye par email [GET]
+
+
+
+On doit etre connecte avant d'entree sur cet url
+    http://localhost:8080/FournisseurIdentite/api/updateInfo [PUT]:
+    {
+        "email" : "example@gmail.com",
+        "mdp" : "password"
+    }
+    sachant que mdp est le nouveau mot de passe
+
